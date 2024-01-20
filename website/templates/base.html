@@ -20,17 +20,66 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar">
+        <button 
+        class="navbar-toggler" 
+        type="button" 
+        data-toggle="collapse" 
+        data-target="#navbar"
+        >
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbar">
             <div class="navbar-nav">
-                <a href="/login" class="nav-item nav-link" id="login"></a>
+                <a href="/login" class="nav-item nav-link" id="login">
+                  Login
+                </a>
+
+                <a href="/sign-up" class="nav-item nav-link" id="signUp">
+                  Sign Up
+                </a>
+
+                <a href="/logout" class="nav-item nav-link" id="logout">
+                  Logout
+                </a>
+
+                <a href="/" class="nav-item nav-link" id="home">
+                  Home
+                </a>
             </div>
         </div>
     </nav>
 
+    <!-- displaying the flash messages; putting it in the base means this is will show on the other pages as well -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    <!-- looping through the messages -->
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="alert alert-danger alert-dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% else %}
+            <div class="alert alert-success alert-dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="container">
+      <!-- after block comes the name of the block which can be anything you want -->
+      <!-- we use it as a connection between the html pages, if we paste this in the other html page we can put the content there -->
+      {% block content %}
+      {% endblock %}
+    </div>
     <!-- JS associated bootstrap -->
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -49,7 +98,7 @@
     ></script>
     <!-- this is for loading text file JS, static is the folder and then the filename -->
     <!-- url_for is a Python function that loads the url from the specified folder -->
-    <!-- {{}} means we are writing a Python expression such as a variable, a function -->
+    <!--  means we are writing a Python expression such as a variable, a function -->
     <script>
         type="text/javascript"
         src="{{ url_for('static', filename='index.js')}}"
