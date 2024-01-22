@@ -10,6 +10,21 @@ auth = Blueprint('auth', __name__)
 def login():
     # data = request.form
     # this will print ImmutableMultiDict([('email', 'tim@gmail.com'), ('password', 'hshhshsh')])
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # Checking if the user exists in the db
+        # Filtering through the User to check if the email exists and returns the first() result
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password): #Checks if the password of teh user is the same as the entered password
+                flash('Logged in successfully!', category='success')
+            else:
+                flash('Incorrect password, try again.', category='error')
+        else:
+            flash('Email does not exist.', category='error')
+
     return render_template("login.html")
 
 @auth.route('/logout')
@@ -25,7 +40,11 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
-        if len(email) < 4:
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            flash('Email already exists.', category='error')
+        elif len(email) < 4:
             flash('Email must be greater than 4 characters.', category='error')
         elif len(first_name) < 2:
             flash('First name must be greater than 2 characters.', category='error')
